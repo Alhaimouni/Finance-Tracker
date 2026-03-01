@@ -3,7 +3,7 @@ version: '3.8'
 services:
   qashio-api:
     build: 
-      context: ./qashio-api
+      context: ./backend
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
@@ -21,10 +21,10 @@ services:
 
   qashio-frontend:
     build: 
-      context: ./qashio-frontend-assignment
+      context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "4000:3000"
+      - "3001:3000"
     depends_on:
       - qashio-api
     networks:
@@ -75,7 +75,7 @@ services:
       - default
 
   kafka:
-    image: bitnami/kafka:latest
+    image: confluentinc/cp-kafka:7.4.0
     ports:
       - "9092:9092"
     environment:
