@@ -20,7 +20,8 @@ import { EventsModule } from './events/events.module';
         type: 'postgres',
         url: configService.get<string>('DATABASE_URL'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: configService.get<string>('NODE_ENV') !== 'production',
+        // synchronize: configService.get<string>('NODE_ENV') !== 'production',
+         synchronize: true, // DEV ONLY - auto sync entities to DB schema
         logging: configService.get<string>('NODE_ENV') === 'development',
       }),
       inject: [ConfigService],

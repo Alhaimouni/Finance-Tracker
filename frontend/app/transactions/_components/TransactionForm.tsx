@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, Controller, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -15,7 +15,10 @@ import {
   CircularProgress,
   Autocomplete,
   Stack,
+  Paper,
+  InputAdornment,
 } from '@mui/material';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { DatePicker } from '@mui/x-date-pickers';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Link from 'next/link';
@@ -53,6 +56,19 @@ export default function TransactionForm({ editId }: TransactionFormProps) {
   const createMutation = useCreateTransaction();
   const updateMutation = useUpdateTransaction();
   const createCategory = useCreateCategory();
+  const [newCatName, setNewCatName] = useState('');
+  const [showNewCat, setShowNewCat] = useState(false);
+  const [catSuccess, setCatSuccess] = useState('');
+
+  const handleCreateCategory = async (fieldOnChange: (id: string) => void) => {
+    if (!newCatName.trim()) return;
+    const cat = await createCategory.mutateAsync(newCatName.trim());
+    fieldOnChange(cat.id);
+    setCatSuccess(`Category "${newCatName.trim()}" created and selected!`);
+    setNewCatName('');
+    setShowNewCat(false);
+    setTimeout(() => setCatSuccess(''), 3000);
+  };
 
   const {
     control,
@@ -162,40 +178,80 @@ export default function TransactionForm({ editId }: TransactionFormProps) {
           />
 
           {/* Category */}
-          <Controller
-            name="categoryId"
-            control={control}
-            render={({ field }) => (
-              <Autocomplete
-                loading={loadingCategories}
-                options={categories ?? []}
-                getOptionLabel={(opt) => opt.name}
-                value={categories?.find((c) => c.id === field.value) ?? null}
-                onChange={(_e, val) => field.onChange(val?.id ?? '')}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Category *"
-                    error={Boolean(errors.categoryId)}
-                    helperText={errors.categoryId?.message}
-                  />
-                )}
-                noOptionsText={
-                  <Button
-                    size="small"
-                    onClick={async () => {
-                      const name = prompt('New category name:');
-                      if (!name?.trim()) return;
-                      const cat = await createCategory.mutateAsync(name.trim());
-                      field.onChange(cat.id);
-                    }}
-                  >
-                    + Create new category
-                  </Button>
-                }
-              />
+          <Box>
+            <Controller
+              name="categoryId"
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  loading={loadingCategories}
+                  options={categories ?? []}
+                  getOptionLabel={(opt) => opt.name}
+                  value={categories?.find((c) => c.id === field.value) ?? null}
+                  onChange={(_e, val) => field.onChange(val?.id ?? '')}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Category *"
+                      error={Boolean(errors.categoryId)}
+                      helperText={errors.categoryId?.message}
+                    />
+                  )}
+                />
+              )}
+            />
+
+            {!showNewCat ? (
+              <Button size="small" sx={{ mt: 0.5 }} onClick={() => setShowNewCat(true)}>
+                + Create new category
+              </Button>
+            ) : (
+              <Paper variant="outlined" sx={{ p: 1.5, mt: 1, borderRadius: 2 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+                  New category name
+                </Typography>
+                <Controller
+                  name="categoryId"
+                  control={control}
+                  render={({ field }) => (
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <TextField
+                        size="small"
+                        placeholder="e.g. Groceries"
+                        value={newCatName}
+                        onChange={(e) => setNewCatName(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleCreateCategory(field.onChange); } }}
+                        fullWidth
+                        InputProps={{
+                          endAdornment: createCategory.isPending ? (
+                            <InputAdornment position="end"><CircularProgress size={16} /></InputAdornment>
+                          ) : undefined,
+                        }}
+                      />
+                      <Button
+                        size="small"
+                        variant="contained"
+                        onClick={() => handleCreateCategory(field.onChange)}
+                        disabled={!newCatName.trim() || createCategory.isPending}
+                      >
+                        Add
+                      </Button>
+                      <Button size="small" onClick={() => { setShowNewCat(false); setNewCatName(''); }}>
+                        Cancel
+                      </Button>
+                    </Box>
+                  )}
+                />
+              </Paper>
             )}
-          />
+
+            {catSuccess && (
+              <Box sx={{ mt: 1, px: 1.5, py: 0.75, bgcolor: 'success.light', borderRadius: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <CheckCircleOutlineIcon fontSize="small" color="success" />
+                <Typography variant="caption" color="success.dark" fontWeight={600}>{catSuccess}</Typography>
+              </Box>
+            )}
+          </Box>
 
           {/* Date */}
           <Controller

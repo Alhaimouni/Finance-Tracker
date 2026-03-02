@@ -111,6 +111,15 @@ export const budgetsApi = {
       body: JSON.stringify(data),
     }),
 
+  update: (id: string, data: Partial<Omit<Budget, 'id' | 'userId' | 'category'>>) =>
+    request<Budget>(`/budgets/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  delete: (id: string) =>
+    request<void>(`/budgets/${id}`, { method: 'DELETE' }),
+
   getStatus: (id: string) =>
     request<BudgetStatus>(`/budgets/${id}/status`),
 };

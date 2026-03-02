@@ -44,6 +44,9 @@ export interface BudgetStatus extends Budget {
   spent: number;
   remaining: number;
   percentageUsed: number;
+  incomeContributions: number;
+  effectiveBudget: number;
+  incomeItems: { id: string; date: string; amount: number; description: string | null }[];
 }
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────

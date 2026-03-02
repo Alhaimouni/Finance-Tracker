@@ -42,22 +42,44 @@ export class BudgetsService {
 
   async getStatus(id: string, userId: string) {
     const budget = await this.findById(id, userId);
-    const summary = await this.transactionsService.getSummary(
-      userId,
-      budget.startDate,
-      budget.endDate,
-    );
 
-    const catEntry = summary.byCategory.find((b) => b.category === budget.category?.name);
-    const spent = catEntry?.total ?? 0;
-    const remaining = Number(budget.amount) - spent;
-    const percentageUsed = Number(budget.amount) > 0 ? (spent / Number(budget.amount)) * 100 : 0;
+    // Fetch all transactions in the budget period for this category
+    const qb = this.transactionsService['transactionsRepo']
+      .createQueryBuilder('t')
+      .leftJoinAndSelect('t.category', 'category')
+      .where('t.userId = :userId', { userId })
+      .andWhere('t.date >= :startDate', { startDate: budget.startDate })
+      .andWhere('t.date <= :endDate', { endDate: budget.endDate })
+      .andWhere('category.id = :categoryId', { categoryId: budget.categoryId });
+
+    const transactions = await qb.getMany();
+
+    let spent = 0;
+    let incomeContributions = 0;
+    const incomeItems: { id: string; date: string; amount: number; description: string | null }[] = [];
+
+    for (const t of transactions) {
+      const amount = Number(t.amount);
+      if (t.type === 'expense') {
+        spent += amount;
+      } else {
+        incomeContributions += amount;
+        incomeItems.push({ id: t.id, date: t.date, amount, description: t.description });
+      }
+    }
+
+    const effectiveBudget = Number(budget.amount) + incomeContributions;
+    const remaining = effectiveBudget - spent;
+    const percentageUsed = effectiveBudget > 0 ? (spent / effectiveBudget) * 100 : 0;
 
     return {
       ...budget,
       spent,
       remaining,
       percentageUsed: Math.round(percentageUsed * 100) / 100,
+      incomeContributions,
+      effectiveBudget,
+      incomeItems,
     };
   }
 }

@@ -36,13 +36,21 @@ export function useCreateBudget() {
   });
 }
 
+export function useUpdateBudget() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<Omit<Budget, 'id' | 'userId' | 'category'>> }) =>
+      budgetsApi.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: budgetKeys.all });
+    },
+  });
+}
+
 export function useDeleteBudget() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) =>
-      fetch(`/api/budgets/${id}`, { method: 'DELETE', credentials: 'include' }).then((r) => {
-        if (!r.ok) throw new Error('Failed to delete budget');
-      }),
+    mutationFn: (id: string) => budgetsApi.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: budgetKeys.all });
     },

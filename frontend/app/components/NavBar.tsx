@@ -21,6 +21,7 @@ import { useCurrentUser, useLogout } from '@/app/hooks/useAuth';
 const NAV_LINKS = [
   { label: 'Transactions', href: '/transactions' },
   { label: 'Budgets', href: '/budgets' },
+  { label: 'Statistics', href: '/statistics' },
 ];
 
 export default function NavBar() {
