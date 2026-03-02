@@ -104,8 +104,7 @@ export default function TransactionDetailDrawer({ transactionId, onClose }: Prop
                   fontWeight={800}
                   color={transaction.type === 'income' ? 'success.main' : 'error.main'}
                 >
-                  {transaction.type === 'income' ? '+' : '-'}$
-                  {Number(transaction.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  {transaction.type === 'income' ? '+' : '-'}JOD {Number(transaction.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                 </Typography>
                 <Chip
                   label={transaction.type}

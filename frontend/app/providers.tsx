@@ -11,17 +11,76 @@ import { ReactNode, useState } from 'react';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#0063cc',
+      main: '#000000',
     },
     secondary: {
-      main: '#19857b',
+      main: '#A78F65',
     },
     background: {
-      default: '#f8f9fa',
+      default: '#FFFFFF',
+      paper: '#FFFFFF',
     },
   },
   typography: {
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          borderRadius: 8,
+        },
+        contained: {
+          backgroundColor: '#ffffff',
+          color: '#000000',
+          border: '2px solid #000000',
+          boxShadow: 'none',
+          '&:hover': {
+            backgroundColor: '#f5f5f5',
+            boxShadow: 'none',
+            border: '2px solid #000000',
+          },
+          '&.Mui-disabled': {
+            border: '2px solid rgba(0,0,0,0.2)',
+          },
+        },
+        outlined: {
+          borderColor: '#000000',
+          borderWidth: '2px',
+          color: '#000000',
+          '&:hover': {
+            borderWidth: '2px',
+            borderColor: '#000000',
+            backgroundColor: 'rgba(0,0,0,0.04)',
+          },
+        },
+        text: {
+          color: '#000000',
+        },
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          color: '#000000',
+        },
+      },
+    },
+    MuiToggleButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          '&.Mui-selected': {
+            backgroundColor: '#000000',
+            color: '#ffffff',
+            '&:hover': {
+              backgroundColor: '#333333',
+            },
+          },
+        },
+      },
+    },
   },
 });
 

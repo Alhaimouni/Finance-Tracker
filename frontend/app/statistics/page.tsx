@@ -119,7 +119,7 @@ export default function StatisticsPage() {
       {/* Header */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <BarChartIcon color="primary" />
+          <BarChartIcon sx={{ color: '#000000' }} />
           <Typography variant="h5" fontWeight={700}>
             Statistics & Reports
           </Typography>
@@ -189,7 +189,7 @@ export default function StatisticsPage() {
             <Grid size={{ xs: 12, sm: 4 }}>
               <StatCard
                 title="Total Income"
-                value={`$${totalIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
+                value={`JOD ${totalIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
                 icon={<TrendingUpIcon />}
                 color="#2e7d32"
                 subtitle="All income transactions"
@@ -198,7 +198,7 @@ export default function StatisticsPage() {
             <Grid size={{ xs: 12, sm: 4 }}>
               <StatCard
                 title="Total Expenses"
-                value={`$${totalExpense.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
+                value={`JOD ${totalExpense.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
                 icon={<TrendingDownIcon />}
                 color="#c62828"
                 subtitle="All expense transactions"
@@ -207,9 +207,9 @@ export default function StatisticsPage() {
             <Grid size={{ xs: 12, sm: 4 }}>
               <StatCard
                 title="Net Balance"
-                value={`${netBalance >= 0 ? '+' : ''}$${Math.abs(netBalance).toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
+                value={`${netBalance >= 0 ? '+' : ''}JOD ${Math.abs(netBalance).toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
                 icon={<AccountBalanceWalletIcon />}
-                color={netBalance >= 0 ? '#1565c0' : '#b71c1c'}
+                color={netBalance >= 0 ? '#1a7a1a' : '#b71c1c'}
                 subtitle={netBalance >= 0 ? 'Positive cash flow' : 'Negative cash flow'}
               />
             </Grid>
@@ -228,7 +228,7 @@ export default function StatisticsPage() {
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                     <Typography variant="body2">Income</Typography>
                     <Typography variant="body2" fontWeight={700} color="success.main">
-                      ${totalIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      JOD {totalIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </Typography>
                   </Box>
                   <LinearProgress
@@ -242,7 +242,7 @@ export default function StatisticsPage() {
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                     <Typography variant="body2">Expenses</Typography>
                     <Typography variant="body2" fontWeight={700} color="error.main">
-                      ${totalExpense.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      JOD {totalExpense.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </Typography>
                   </Box>
                   <LinearProgress
@@ -273,7 +273,7 @@ export default function StatisticsPage() {
                         <Chip label={`${row.count} txn${row.count !== 1 ? 's' : ''}`} size="small" variant="outlined" />
                       </Box>
                       <Typography variant="body2" fontWeight={700}>
-                        ${Number(row.total).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        JOD {Number(row.total).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </Typography>
                     </Box>
                     <LinearProgress
@@ -303,7 +303,7 @@ export default function StatisticsPage() {
                         You saved {rate.toFixed(1)}% of your income
                       </Typography>
                       <Typography variant="body2" fontWeight={700} color={`${rateColor}.main`}>
-                        ${Math.max(0, totalIncome - totalExpense).toFixed(2)} saved
+                        JOD {Math.max(0, totalIncome - totalExpense).toFixed(2)} saved
                       </Typography>
                     </Box>
                     <LinearProgress

@@ -1,111 +1,215 @@
 'use client';
 
 import {
-  AppBar,
-  Toolbar,
-  Typography,
   Box,
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
+  Typography,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
   Avatar,
   Divider,
   Skeleton,
+  Tooltip,
+  Button,
+  Drawer,
 } from '@mui/material';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
 import { useCurrentUser, useLogout } from '@/app/hooks/useAuth';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import LogoutIcon from '@mui/icons-material/Logout';
+
+// ─── Sidebar constants ────────────────────────────────────────────────────────
+
+const SIDEBAR_WIDTH = 260;
+const SIDEBAR_BG = '#FFFFFF';
+const ACTIVE_BG = '#A78F65';
+const ACTIVE_TEXT = '#ffffff';
+const INACTIVE_TEXT = 'rgba(0,0,0,0.55)';
+const HOVER_BG = 'rgba(167,143,101,0.12)';
 
 const NAV_LINKS = [
-  { label: 'Transactions', href: '/transactions' },
-  { label: 'Budgets', href: '/budgets' },
-  { label: 'Statistics', href: '/statistics' },
+  { label: 'Transactions', href: '/transactions', icon: <ReceiptLongIcon fontSize="small" /> },
+  { label: 'Budgets', href: '/budgets', icon: <AccountBalanceWalletIcon fontSize="small" /> },
+  { label: 'Statistics', href: '/statistics', icon: <BarChartIcon fontSize="small" /> },
 ];
 
-export default function NavBar() {
+// ─── Inner content (shared by both desktop static + mobile drawer) ────────────
+
+export function SidebarContent({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
   const { data: user, isLoading } = useCurrentUser();
   const logout = useLogout();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const handleMenuOpen = (e: React.MouseEvent<HTMLElement>) => setAnchorEl(e.currentTarget);
-  const handleMenuClose = () => setAnchorEl(null);
-  const handleLogout = () => {
-    handleMenuClose();
-    logout.mutate();
-  };
 
   return (
-    <AppBar position="static" color="primary" elevation={0}>
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{ fontWeight: 700, mr: 4 }}>
-          Finance Tracker
+    <Box
+      sx={{
+        width: SIDEBAR_WIDTH,
+        minHeight: '100vh',
+        bgcolor: SIDEBAR_BG,
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      {/* ── App title ─────────────────────────────────────────────────── */}
+      <Box sx={{ px: 3, pt: 3.5, pb: 2.5 }}>
+        <Typography
+          variant="h6"
+          fontWeight={800}
+          sx={{ color: ACTIVE_BG, letterSpacing: '0.02em', lineHeight: 1.2 }}
+        >
+          Finance
         </Typography>
+        <Typography
+          variant="h6"
+          fontWeight={800}
+          sx={{ color: '#000000', letterSpacing: '0.02em', lineHeight: 1.2 }}
+        >
+          Tracker
+        </Typography>
+      </Box>
 
-        {/* Nav links */}
-        <Box sx={{ flexGrow: 1, display: 'flex', gap: 1 }}>
-          {NAV_LINKS.map(({ label, href }) => (
-            <Button
+      <Divider sx={{ borderColor: 'rgba(0,0,0,0.1)', mx: 2 }} />
+
+      {/* ── Nav links ─────────────────────────────────────────────────── */}
+      <List sx={{ px: 1.5, pt: 1.5, flexGrow: 1 }} disablePadding>
+        {NAV_LINKS.map(({ label, href, icon }) => {
+          const active = pathname.startsWith(href);
+          return (
+            <ListItemButton
               key={href}
-              color="inherit"
               component={Link}
               href={href}
+              onClick={onClose}
               sx={{
-                fontWeight: pathname.startsWith(href) ? 700 : 400,
-                borderBottom: pathname.startsWith(href) ? '2px solid white' : '2px solid transparent',
-                borderRadius: 0,
+                borderRadius: 2,
+                mb: 0.5,
+                bgcolor: active ? ACTIVE_BG : 'transparent',
+                color: active ? ACTIVE_TEXT : INACTIVE_TEXT,
+                '&:hover': {
+                  bgcolor: active ? ACTIVE_BG : HOVER_BG,
+                  color: active ? ACTIVE_TEXT : '#333333',
+                },
+                '& .MuiListItemIcon-root': {
+                  color: active ? ACTIVE_TEXT : INACTIVE_TEXT,
+                  minWidth: 36,
+                },
+                transition: 'all 0.15s ease',
               }}
             >
-              {label}
-            </Button>
-          ))}
-        </Box>
+              <ListItemIcon>{icon}</ListItemIcon>
+              <ListItemText
+                primary={label}
+                slotProps={{
+                  primary: { fontSize: 14, fontWeight: active ? 700 : 500 },
+                }}
+              />
+            </ListItemButton>
+          );
+        })}
+      </List>
 
-        {/* New Transaction CTA */}
-        <Button
-          variant="outlined"
-          color="inherit"
-          component={Link}
-          href="/transactions/new"
-          sx={{ mr: 2, borderColor: 'rgba(255,255,255,0.6)' }}
-        >
-          + New Transaction
-        </Button>
-
-        {/* User menu */}
+      {/* ── User section ──────────────────────────────────────────────── */}
+      <Divider sx={{ borderColor: 'rgba(0,0,0,0.1)', mx: 2 }} />
+      <Box sx={{ p: 2 }}>
         {isLoading ? (
-          <Skeleton variant="circular" width={36} height={36} sx={{ bgcolor: 'rgba(255,255,255,0.3)' }} />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Skeleton variant="circular" width={36} height={36} />
+            <Skeleton width={100} height={18} />
+          </Box>
         ) : user ? (
-          <>
-            <IconButton onClick={handleMenuOpen} sx={{ p: 0 }}>
-              <Avatar sx={{ width: 36, height: 36, bgcolor: 'secondary.main', fontSize: 14 }}>
-                {user.name?.charAt(0).toUpperCase()}
-              </Avatar>
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            >
-              <MenuItem disabled>
-                <Typography variant="body2" color="text.secondary">
-                  {user.email}
-                </Typography>
-              </MenuItem>
-              <Divider />
-              <MenuItem onClick={handleLogout}>Sign out</MenuItem>
-            </Menu>
-          </>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Avatar sx={{ width: 36, height: 36, bgcolor: ACTIVE_BG, fontSize: 14, fontWeight: 700 }}>
+              {user.name?.charAt(0).toUpperCase()}
+            </Avatar>
+            <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+              <Typography variant="body2" fontWeight={600} color="#000000" noWrap>
+                {user.name}
+              </Typography>
+              <Typography variant="caption" color={INACTIVE_TEXT} noWrap>
+                {user.email}
+              </Typography>
+            </Box>
+            <Tooltip title="Sign out">
+              <Box
+                component="button"
+                onClick={() => logout.mutate()}
+                sx={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: INACTIVE_TEXT,
+                  p: 0.5,
+                  borderRadius: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  '&:hover': { color: '#000000' },
+                }}
+              >
+                <LogoutIcon fontSize="small" />
+              </Box>
+            </Tooltip>
+          </Box>
         ) : (
-          <Button color="inherit" component={Link} href="/auth/login">
+          <Button
+            component={Link}
+            href="/auth/login"
+            fullWidth
+            sx={{ color: INACTIVE_TEXT, textTransform: 'none', '&:hover': { color: '#000000' } }}
+          >
             Sign in
           </Button>
         )}
-      </Toolbar>
-    </AppBar>
+      </Box>
+    </Box>
+  );
+}
+
+// ─── Desktop static sidebar ───────────────────────────────────────────────────
+
+export default function Sidebar({
+  mobileOpen,
+  onMobileClose,
+}: {
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
+}) {
+  return (
+    <>
+      {/* Mobile: slide-in Drawer */}
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={onMobileClose}
+        ModalProps={{ keepMounted: true }}
+        sx={{
+          display: { xs: 'block', md: 'none' },
+          '& .MuiDrawer-paper': {
+            width: SIDEBAR_WIDTH,
+            boxSizing: 'border-box',
+            borderRight: '1px solid rgba(0,0,0,0.08)',
+          },
+        }}
+      >
+        <SidebarContent onClose={onMobileClose} />
+      </Drawer>
+
+      {/* Desktop: always-visible static panel */}
+      <Box
+        component="nav"
+        sx={{
+          display: { xs: 'none', md: 'flex' },
+          width: SIDEBAR_WIDTH,
+          minWidth: SIDEBAR_WIDTH,
+          flexShrink: 0,
+          borderRight: '1px solid rgba(0,0,0,0.08)',
+        }}
+      >
+        <SidebarContent />
+      </Box>
+    </>
   );
 }

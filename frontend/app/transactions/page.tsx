@@ -18,6 +18,8 @@ import { DataGrid, GridColDef, GridSortModel, GridPaginationModel, GridRowParams
 import { DatePicker } from '@mui/x-date-pickers';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListOffIcon from '@mui/icons-material/FilterListOff';
+import AddIcon from '@mui/icons-material/Add';
+import Link from 'next/link';
 import { useTransactions } from '@/app/hooks/useTransactions';
 import { useCategories } from '@/app/hooks/useCategories';
 import { useTransactionStore } from '@/app/hooks/useTransactionStore';
@@ -52,18 +54,20 @@ const columns: GridColDef<Transaction>[] = [
   {
     field: 'amount',
     headerName: 'Amount',
-    width: 130,
+    width: 150,
     sortable: true,
-    align: 'right',
-    headerAlign: 'right',
+    align: 'center',
+    headerAlign: 'center',
     renderCell: ({ row, value }) => (
-      <Typography
-        variant="body2"
-        fontWeight={600}
-        color={row.type === 'income' ? 'success.main' : 'error.main'}
-      >
-        {row.type === 'income' ? '+' : '-'}${Number(value).toLocaleString('en-US', { minimumFractionDigits: 2 })}
-      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%' }}>
+        <Typography
+          variant="body2"
+          fontWeight={600}
+          color={row.type === 'income' ? 'success.main' : 'error.main'}
+        >
+          {row.type === 'income' ? '+' : '-'}JOD {Number(value).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+        </Typography>
+      </Box>
     ),
   },
   {
@@ -133,18 +137,31 @@ export default function TransactionsPage() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, gap: 1 }}>
         <Typography variant="h5" fontWeight={700}>
           Transactions
         </Typography>
-        <Button
-          variant="text"
-          size="small"
-          startIcon={<FilterListOffIcon />}
-          onClick={resetFilters}
-        >
-          Reset filters
-        </Button>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexShrink: 0 }}>
+          <Button
+            variant="text"
+            size="small"
+            startIcon={<FilterListOffIcon />}
+            onClick={resetFilters}
+            sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
+          >
+            Reset filters
+          </Button>
+          <Button
+            component={Link}
+            href="/transactions/new"
+            variant="contained"
+            size="small"
+            startIcon={<AddIcon />}
+          >
+            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>New Transaction</Box>
+            <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>New</Box>
+          </Button>
+        </Box>
       </Box>
 
       {/* ─── Filter bar ─────────────────────────────────────────────────── */}
@@ -207,6 +224,7 @@ export default function TransactionsPage() {
       )}
 
       {/* ─── DataGrid ───────────────────────────────────────────────────── */}
+      <Box sx={{ width: '100%', overflowX: 'auto' }}>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -241,6 +259,7 @@ export default function TransactionsPage() {
           ),
         }}
       />
+      </Box>
 
       {/* ─── Detail Drawer ──────────────────────────────────────────────── */}
       <TransactionDetailDrawer

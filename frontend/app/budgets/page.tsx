@@ -109,7 +109,7 @@ function BudgetDetailsDialog({ budgetId, open, onClose }: { budgetId: string; op
               {[
                 { label: 'Base Budget', value: status.amount, color: 'primary.main' },
                 { label: 'Income Added', value: status.incomeContributions ?? 0, color: 'success.main' },
-                { label: 'Effective Budget', value: status.effectiveBudget ?? status.amount, color: 'info.main' },
+                { label: 'Effective Budget', value: status.effectiveBudget ?? status.amount, color: 'text.primary' },
                 { label: 'Spent', value: status.spent, color: 'error.main' },
                 { label: 'Remaining', value: status.remaining, color: status.remaining >= 0 ? 'success.main' : 'error.main' },
               ].map(({ label, value, color: c }) => (
@@ -117,7 +117,7 @@ function BudgetDetailsDialog({ budgetId, open, onClose }: { budgetId: string; op
                   <Paper variant="outlined" sx={{ p: 1.5, textAlign: 'center', borderRadius: 2 }}>
                     <Typography variant="caption" color="text.secondary" display="block">{label}</Typography>
                     <Typography variant="subtitle2" fontWeight={700} color={c}>
-                      ${Number(value).toFixed(2)}
+                      JOD {Number(value).toFixed(2)}
                     </Typography>
                   </Paper>
                 </Grid>
@@ -157,7 +157,7 @@ function BudgetDetailsDialog({ budgetId, open, onClose }: { budgetId: string; op
                         )}
                       </Box>
                       <Typography variant="body2" fontWeight={700} color="success.main">
-                        +${Number(item.amount).toFixed(2)}
+                        +JOD {Number(item.amount).toFixed(2)}
                       </Typography>
                     </Box>
                   ))}
@@ -167,17 +167,17 @@ function BudgetDetailsDialog({ budgetId, open, onClose }: { budgetId: string; op
 
             {pct >= 100 && (
               <Alert severity="error">
-                Budget exceeded by ${(Number(status.spent) - Number(status.amount)).toFixed(2)}
+                Budget exceeded by JOD {(Number(status.spent) - Number(status.amount)).toFixed(2)}
               </Alert>
             )}
             {pct >= 80 && pct < 100 && (
               <Alert severity="warning">
-                Over 80% used — ${Number(status.remaining).toFixed(2)} remaining
+                Over 80% used — JOD {Number(status.remaining).toFixed(2)} remaining
               </Alert>
             )}
             {pct < 80 && (
               <Alert severity="success" icon={<CheckCircleOutlineIcon />}>
-                On track — ${Number(status.remaining).toFixed(2)} remaining
+                On track — JOD {Number(status.remaining).toFixed(2)} remaining
               </Alert>
             )}
           </Stack>
@@ -236,19 +236,19 @@ function BudgetStatusCard({
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="caption" color="text.secondary">
-            ${Number(status.spent).toFixed(2)} spent
+            JOD {Number(status.spent).toFixed(2)} spent
           </Typography>
           <Typography variant="caption" color={`${color}.main`} fontWeight={700}>
             {pct.toFixed(0)}% used
           </Typography>
           <Typography variant="caption" color="text.secondary">
-            ${Number(effectiveBudget).toFixed(2)} budget{(status.incomeContributions ?? 0) > 0 ? ' (+income)' : ''}
+            JOD {Number(effectiveBudget).toFixed(2)} budget{(status.incomeContributions ?? 0) > 0 ? ' (+income)' : ''}
           </Typography>
         </Box>
 
         {(status.incomeContributions ?? 0) > 0 && (
           <Chip
-            label={`+$${Number(status.incomeContributions).toFixed(2)} income added`}
+            label={`+JOD ${Number(status.incomeContributions).toFixed(2)} income added`}
             size="small"
             color="success"
             variant="outlined"
@@ -258,19 +258,19 @@ function BudgetStatusCard({
 
         {pct >= 100 && (
           <Alert severity="error" sx={{ mt: 1.5, py: 0 }}>
-            Exceeded by ${(Number(status.spent) - Number(effectiveBudget)).toFixed(2)}
+            Exceeded by JOD {(Number(status.spent) - Number(effectiveBudget)).toFixed(2)}
           </Alert>
         )}
         {pct >= 80 && pct < 100 && (
           <Alert severity="warning" sx={{ mt: 1.5, py: 0 }}>
-            ${Number(status.remaining).toFixed(2)} remaining
+            JOD {Number(status.remaining).toFixed(2)} remaining
           </Alert>
         )}
       </CardContent>
       <Divider />
       <CardActions sx={{ px: 1.5, py: 1, justifyContent: 'flex-end', gap: 0.5 }}>
         <Tooltip title="Details">
-          <IconButton size="small" color="info" onClick={() => onDetails(budgetId)}>
+          <IconButton size="small" onClick={() => onDetails(budgetId)}>
             <InfoOutlinedIcon fontSize="small" />
           </IconButton>
         </Tooltip>
