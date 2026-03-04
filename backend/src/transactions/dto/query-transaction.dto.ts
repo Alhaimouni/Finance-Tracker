@@ -11,7 +11,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { TransactionType } from '../transaction.entity';
+import { TransactionType } from '../entities/transaction.entity';
 
 export class QueryTransactionDto {
   @ApiPropertyOptional({ example: '2026-01-01' })

@@ -3,7 +3,7 @@ import { NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { TransactionsService } from './transactions.service';
-import { Transaction, TransactionType } from './transaction.entity';
+import { Transaction, TransactionType } from './entities/transaction.entity';
 
 const USER_ID = 'user-uuid-1';
 

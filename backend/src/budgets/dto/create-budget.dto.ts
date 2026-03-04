@@ -6,7 +6,7 @@ import {
   IsEnum,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { BudgetPeriod } from '../budget.entity';
+import { BudgetPeriod } from '../entities/budget.entity';
 
 export class CreateBudgetDto {
   @ApiProperty({ example: 'uuid-of-category' })

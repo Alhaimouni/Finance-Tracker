@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { BudgetsService } from './budgets.service';
-import { Budget, BudgetPeriod } from './budget.entity';
+import { Budget, BudgetPeriod } from './entities/budget.entity';
 import { TransactionsService } from '../transactions/transactions.service';
 
 const USER_ID = 'user-uuid-1';

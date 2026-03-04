@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { Transaction } from '../transactions/transaction.entity';
+import { Transaction } from '../transactions/entities/transaction.entity';
 import { BudgetsService } from '../budgets/budgets.service';
 
 @Injectable()

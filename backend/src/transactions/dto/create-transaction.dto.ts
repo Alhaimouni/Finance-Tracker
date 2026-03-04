@@ -9,7 +9,7 @@ import {
   MaxLength,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { TransactionType } from '../transaction.entity';
+import { TransactionType } from '../entities/transaction.entity';
 
 export class CreateTransactionDto {
   @ApiProperty({ example: 150.5 })

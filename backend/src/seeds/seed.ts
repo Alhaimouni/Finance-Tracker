@@ -10,9 +10,9 @@ import { DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
-import { User } from '../users/user.entity';
-import { Category } from '../categories/category.entity';
-import { Transaction, TransactionType } from '../transactions/transaction.entity';
+import { User } from '../users/entities/user.entity';
+import { Category } from '../categories/entities/category.entity';
+import { Transaction, TransactionType } from '../transactions/entities/transaction.entity';
 
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
